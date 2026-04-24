@@ -1,0 +1,857 @@
+body {
+  background-color: black;
+  padding-left: 5%;  /* Deja un 5% de aire a la izquierda */
+  padding-right: 5%; /* Deja un 5% de aire a la derecha */
+  box-sizing: border-box; /* ¡MUY IMPORTANTE! Para que el padding no sume ancho extra */
+  overflow-x: hidden; /* Esta línea "corta" cualquier sobrante y quita la barra */
+}
+
+/* 2. ESTILO UNIFICADO PARA NAV Y FOOTER */
+nav, footer {
+  width: 100%;
+  background-color: #1a1a1a; /* Fondo oscuro del Grimorio */
+  display: flex;
+  justify-content: center; /* Centra el contenido internamente */
+  box-sizing: border-box;
+}
+
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 2px solid #FFD96D; /* Línea dorada abajo */
+}
+
+footer {
+  border-top: 2px solid #FFD96D; /* Línea dorada arriba */
+  margin-top: 40px; /* Espacio con el resto del contenido */
+}
+
+/* 3. EL CONTENEDOR DE "AIRE" (La zona segura) */
+/* Usamos la misma clase para ambos para que queden igualados */
+.contenedor-magico {
+  width: 100%;
+  max-width: 1200px; /* El ancho donde vive tu texto y tablas */
+  padding: 15px 5%;  /* El "aire" del 5% que querías, pero interno */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between; /* Logo a la izquierda, links a la derecha */
+  align-items: center;
+  box-sizing: border-box;
+}
+
+/* Ajuste para que los links no se peguen entre ellos */
+.contenedor-magico ul, .contenedor-magico div {
+  display: flex;
+  gap: 20px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.menu-principal {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex; /* LA MAGIA: Pone los items uno al lado del otro */
+  flex-wrap: wrap;       /* Permite que los elementos bajen si no caben */
+  flex-direction: row !important;   /* Las mantiene de lado mientras quepan */
+  align-items: center !important;
+  height: auto !important;          /* ELIMINA cualquier techo que las oculte */
+  min-height: 50px !important;      /* Mantiene una altura base mínima */
+  justify-content: center !important; /* Centra los temas en la barra */
+  position: -webkit-sticky; /* Soporte para Safari */
+  position: sticky !important;
+  top: 0 !important;                   /* Punto donde se detiene */
+  z-index: 9999 !important; 
+  list-style: none;
+}
+
+.item-padre {
+  /* IMPORTANTE: Para que el desplegable sepa dónde brotar */
+  position: relative; /* Es el "ancla" del sub-menú */
+  list-style: none;
+}
+
+.item-padre > a {
+  display: block;
+  padding: 20px 25px;
+  color: #d4af37;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-weight: bold;
+  transition: 0.3s;
+  position: relative;
+  overflow: visible !important; /* CRUCIAL: si está en 'hidden', el menú se corta */
+}
+
+
+.item-padre > a:hover {
+  background-color: #d4af37;
+  color: #000000;
+}
+
+.sub-menu::before {
+  content: "";
+  position: absolute;
+  top: -20px; /* Cubre el hueco entre el botón y la lista */
+  left: 0;
+  width: 100%;
+  height: 20px;
+  display: block;
+}
+.sub-menu {
+  display: none; /* Está escondido */
+  position: sticky !important; /* Flota sobre el contenido de la página */
+  background-color: #2a2a2a;
+  min-width: 200px;
+  list-style: none;
+  padding: 0;
+  box-shadow: 0px 8px 16px rgba(0,0,0,0.5); /* Sombra para dar profundidad */
+  flex-wrap: wrap;       /* Permite que los elementos bajen si no caben */
+  flex-direction: row !important;   /* Las mantiene de lado mientras quepan */
+  align-items: center !important;
+  height: auto !important;          /* ELIMINA cualquier techo que las oculte */
+  min-height: 50px !important;    
+}
+
+.sub-menu li a {
+  color: #d4af37;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;    
+}
+
+.item-padre:hover .sub-menu {
+  display: block; /* ¡Aparece! */
+}
+
+/* Efecto hover extra para los subtemas */
+.sub-menu li a:hover {
+  background-color: #333;
+  color: #fff;
+}
+
+/* 2. El Interruptor (No se debe ver) */
+.interruptor-oculto {
+  display: none;
+  pointer-events: none; /* Desactiva cualquier interacción táctil o de mouse */
+}
+
+/* 3. Estilo del botón "Ver más" */
+.boton-desplegar {
+  display: block;
+  cursor: pointer;
+  background-color: #FFD96D; /* Tu dorado */
+  color: black;
+  padding: 5px 15px;
+  border-radius: 4px;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+/* 4. El Bloque que se esconde en móviles */
+.contenido-extra {
+  display: none; /* Escondido por defecto */
+  width: 100%;   /* Para que al aparecer ocupe toda la fila de abajo */
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding-top: 10px;
+}
+
+/* 5. LA MAGIA: Cuando el interruptor está activo, muestra el contenido */
+#selector-menu:checked ~ .contenido-extra {
+  display: flex !important;
+}
+
+/* Cambia el texto del botón al abrirse (opcional) */
+#selector-menu:checked ~ .boton-desplegar::after {
+  content: " ✖";
+}
+
+.contenedor-boton {
+  list-style: none;
+  display: contents;
+  flex-direction: column; /* Para que la lista extra caiga debajo del botón */
+  align-items: center;
+  position: relative;
+}
+
+
+/* 6. REGLAS PARA PANTALLAS GRANDES (Escritorio) */
+@media (min-width: 768px) {
+  .boton-desplegar {
+    display: none; /* Escondemos el botón de "Ver más" */
+  }
+
+  .contenido-extra {
+    display: flex !important; /* Siempre visible */
+    flex-direction: row;      /* En línea horizontal */
+    width: auto;
+    padding-top: 0;
+  }
+  
+  .navegacion-fija {
+    flex-wrap: nowrap; /* Todo en una sola línea */
+  }
+  
+  /* Asegúrate de que el checkbox y el botón no ocupen espacio físico en escritorio */
+  .interruptor-oculto, .boton-desplegar {
+    display: none !important;
+    visibility: hidden;
+    position: absolute; /* Lo sacamos del flujo para que no estorbe al pasar el mouse */
+    display: contents; /* Hace que el contenedor "desaparezca" pero sus hijos (contenido-extra) sigan ahí */
+  }
+
+  .menu-principal {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important; /* Todo en una sola línea */
+  }
+
+  .contenedor-tabla {
+    width: 90%;          /* Ocupa el 90% del ancho, dejando un 5% a cada lado */
+    max-width: 1000px;   /* Evita que en pantallas muy grandes la tabla sea gigante */
+    margin: 40px auto;   /* El 'auto' la centra horizontalmente y el 40px le da aire arriba/abajo */
+    overflow-x: auto;    /* TRUCO CLAVE: Si la pantalla es muy chica, permite scroll horizontal en lugar de deformar */
+    display: block;
+  }
+}
+
+/* Esto hace que el salto no sea brusco, sino un deslizamiento suave */
+html {
+    scroll-behavior: smooth;
+  /* Esto evita que el menú tape el inicio de tu texto */
+}
+
+.logo img {
+  height: 50px;                  /* Ajusta el tamaño de tu logo según necesites */
+  width: auto;                   /* Mantiene la proporción */
+  display: block;
+  margin-left: 20px;
+} 
+
+h1 {
+  color: #FFD96D;
+  text-align: center;
+  hyphens: auto; /* Permite que el navegador ponga guiones automáticamente */
+  word-break: break-word; /* Opcional: fuerza el quiebre si la palabra es demasiado larga */
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 35px;
+  line-height: 1.5;
+}
+
+h2 {
+  color: #FFD96D;
+  text-align: center;
+  hyphens: auto; /* Permite que el navegador ponga guiones automáticamente */
+  word-break: break-word; /* Opcional: fuerza el quiebre si la palabra es demasiado larga */
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 35px; 
+  line-height: 1.5;
+}
+
+p {
+  color: #FFD96D;
+  text-align: justify, inter-word;
+  hyphens: auto; /* Permite que el navegador ponga guiones automáticamente */
+  word-break: break-word; /* Opcional: fuerza el quiebre si la palabra es demasiado larga */
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 35px;
+  line-height: 1.5;
+}
+
+h3 {
+  color: #FFD96D;
+  text-align: justify, inter-word;
+  hyphens: auto; /* Permite que el navegador ponga guiones automáticamente */
+  word-break: break-word; /* Opcional: fuerza el quiebre si la palabra es demasiado larga */
+  font-family: 'Papyrus', 'IM Fell English SC', 'Eagle Lake', serif;
+  font-style: italic;
+  font-size: 35px; 
+  line-height: 1.5;
+}
+
+h4 {
+  color: #FFD96D;
+  text-align: justify, inter-word;
+  hyphens: auto; /* Permite que el navegador ponga guiones automáticamente */
+  word-break: break-word; /* Opcional: fuerza el quiebre si la palabra es demasiado larga */
+  font-family: 'Papyrus','IM Fell English SC', 'Eagle Lake', serif;
+  font-style: italic; 
+  font-size: 35px; 
+  line-height: 1.5;
+}
+
+h5 {
+  color: #FFD96D;
+  text-align: justify, inter-word;
+  hyphens: auto; /* Permite que el navegador ponga guiones automáticamente */
+  word-break: break-word; /* Opcional: fuerza el quiebre si la palabra es demasiado larga */
+  font-family: 'Old English Text MT', 'UnifrakturMaguntia', 'MedievalSharp', cursive;
+  font-size: 35px; 
+  line-height: 1.5;
+}
+
+h6 {
+  color: #FFD96D;
+  text-align: justify, inter-word;
+  hyphens: auto; /* Permite que el navegador ponga guiones automáticamente */
+  word-break: break-word; /* Opcional: fuerza el quiebre si la palabra es demasiado larga */
+  font-family: 'Papyrus','IM Fell English SC', 'Eagle Lake', serif;
+  font-style: italic;
+  font-size: 35px; 
+  line-height: 1.5; 
+}
+
+h7 {
+  color: #FFD96D;
+  text-align: justify, inter-word;
+  hyphens: auto; /* Permite que el navegador ponga guiones automáticamente */
+  word-break: break-word; /* Opcional: fuerza el quiebre si la palabra es demasiado larga */
+  font-family: 'Algerian', 'Marcellus SC' 'Cinzel', serif;
+  font-size: 35px; 
+  line-height: 1.5;
+}
+
+h8 {
+  color: #FFB347;
+  text-align: center;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 35px; 
+  line-height: 1.5;
+}
+
+table {
+  width: 100%;
+  table-layout: auto; /* Obliga a respetar los anchos definidos */
+  border-collapse: collapse;
+  margin: 20px 0;
+  color: #FFB347;
+  text-align: center;
+  font-family: 'Times New Roman', Times, serif;
+  word-wrap: break-word;
+  hyphens: auto;
+  font-size: 20px; 
+  line-height: 1.5;
+  font-weight: normal; 
+  letter-spacing: 1px;
+}
+
+/* Color de fondo alterno para las filas */
+tr:nth-child(even) {
+  background-color: #121212;}
+  tr:hover {
+  background-color: #FFB347; /* Fondo se vuelve dorado */
+  color: #000000;            /* Texto se vuelve negro */
+}
+
+
+th.descripcion {
+  width: 50%; /* Esta columna ocupará la mitad de la tabla */
+}
+
+th.id {
+  width: 50px; /* Esta tendrá un ancho fijo pequeño */
+}
+
+table, th, td {
+  border: 10px solid #FFD96D; /* Grosor, estilo y color */
+}
+
+th tr:hover {
+  background-color: #FFB347;
+  color: black;
+  padding: 10px;
+}
+
+td {
+  padding: 8px;
+  text-align: center;
+  hyphens: auto; /* Para que el texto acompañe el escalado sin romperse */
+  white-space: normal;
+  /*word-wrap: break-word;      Rompe las palabras largas */
+  /*overflow-wrap: break-word;  Refuerzo para navegadores modernos */
+  vertical-align: middle;
+}
+
+/* Añade esto a tu clase de signos o celdas */
+td, .signo-tabla {
+  font-family: 'Segoe UI Symbol', 'Apple Symbols', 'Symbola','Arial Unicode MS', 'MS Gothic', serif; 
+}
+
+tr:hover {
+  background-color: #FFB347;
+  color: black;
+  font-variant-emoji: text; /* Esta es la instrucción clave para navegadores modernos */
+}
+
+/* Estilo especial para la columna de los símbolos */
+.simbolo {
+  font-size: 2rem;
+  color: #FFB347;
+  width: 60px; /* Ancho fijo para la columna del ícono */
+  font-family: 'Segoe UI Symbol', 'Apple Symbols', 'Symbola', 'Arial Unicode MS', 'MS Gothic', serif;
+  font-weight: bold;
+}
+/* 1. Definimos desde dónde se achica (arriba al centro) */
+@media (max-width:480px) {
+
+  body {
+    /* Creamos el espacio de aire a los costados para TODO */
+    padding-left: 5%;
+    padding-right: 5%;
+    box-sizing: border-box; /* Esto evita que el padding ensanche la pantalla */
+    overflow-x: hidden; /* Esta línea "corta" cualquier sobrante y quita la barra */
+  } 
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 480px;
+  /* No le pongas height fijo a la tabla aquí */
+  }
+  
+  .contenedor-tabla {
+    /* 1. Anulamos el límite de escritorio */
+    
+    /* 2. Aplicamos el escalado */
+    
+    /* 3. Ajustamos el ancho para que la 'miniatura' llene la pantalla */
+    /* 4. Limpieza de bordes */
+    margin: 0 auto;
+    width: 100%;
+    overflow-x: auto; /* Permite scroll horizontal */
+    overflow-y: hidden; /* Evita que el contenedor crezca hacia abajo innecesariamente */
+    display: block; /* Asegura que el div se comporte como bloque */
+  }
+
+  .contenedor-tabla::-webkit-scrollbar {
+    height: 6px; /* Barra finita para que no estorbe */
+  }
+
+  .contenedor-tabla::-webkit-scrollbar-thumb {
+    background: #FFD96D !important; /* Tu dorado característico */
+    border-radius: 10px;
+  }
+
+  .contenedor-tabla::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2) !important; /* Fondo sutil */
+  }
+  .contenedor-tabla {
+    scrollbar-width: thin;
+    scrollbar-color: #FFD96D #1a1a1a !important;
+  }
+
+  .contenedor-tabla {/* Para Firefox (viejo y nuevo) */
+    scrollbar-width: thin;
+    scrollbar-color: #FFD96D #1a1a1a;
+    margin-bottom: 20px;
+  }
+
+  /* FORZAR DORADO EN CHROME, EDGE, SAFARI Y OPERA VIEJOS */
+  .contenedor-tabla::-webkit-scrollbar {
+    height: 10px !important; /* Un poco más gruesa para que se vea bien */
+    display: block !important;
+  }
+
+  .contenedor-tabla::-webkit-scrollbar-track {
+    background: #1a1a1a !important;
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.5); /* Sombra interna para profundidad */
+  }
+
+  .contenedor-tabla::-webkit-scrollbar-thumb {
+    background: #FFD96D !important;
+    background-color: #FFD96D !important;
+    border-radius: 5px !important;
+    /* Degradado lineal para asegurar que el color pegue */
+    background-image: -webkit-linear-gradient(45deg, #FFD96D, #e6c262);
+    border: 1px solid #000;
+  }
+
+  /* Evitar que desaparezca al no estar en uso */
+  .contenedor-tabla::-webkit-scrollbar-thumb:window-inactive {
+    background: #FFD96D !important;
+  }
+}
+
+
+h9 {
+  color: #FFD96D;
+  text-align: justify, inter-word;
+  hyphens: auto; /* Permite que el navegador ponga guiones automáticamente */
+  word-break: break-word; /* Opcional: fuerza el quiebre si la palabra es demasiado larga */
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 35px; 
+  line-height: 1.5;
+}
+
+/* Esto le da aire a la lista cuando se abre */
+details {
+  margin-top: 15px;
+  padding-left: 30px; /* Alinea los números de los arcanos */
+  color: #FFD96D;
+  margin-top: 30px;  /* Espacio extra respecto a la sección anterior */
+  display: block !important;
+  width: 100% !important; /* Obliga a ocupar todo el ancho disponible */
+  clear: both !important;  /* Corta cualquier float (30/70) de la sección anterior */
+  float: none !important;  /* Asegura que no intente flotar a un costado */
+  margin: 20px 0 !important; /* Separa físicamente la sección anterior de esta */
+}
+
+.divisor-limpio {
+  clear: both;      /* Rompe cualquier arrastre de columnas anterior */
+  display: block;
+  width: 100%;
+  height: 40px;     /* Este es el espacio real de separación que verás */
+}
+/* Estilo para el cursor para que el usuario sepa que es clickable */
+summary {
+  cursor: pointer;
+  outline: none; /* Quita el recuadro azul al hacer clic en algunos navegadores */
+  color: #FFD96D !important; /* Tu dorado místico */
+  display: flex !important; /* Alineación flexible */
+  align-items: center !important;      /* Centra verticalmente la viñeta y el texto */
+  cursor: pointer;
+  font-family: 'Algerian', 'Marcellus SC', 'Cinzel', serif !important;
+  display: list-item !important; 
+  list-style-type: disclosure-closed !important; /* El triángulo estándar */
+  color: #FFD96D !important;
+  font-weight: normal !important;
+  all: unset; /* Borra el rastro de la sección anterior */
+  display: list-item !important; /* Devuelve la viñeta */
+} 
+
+/* Para que la flecha se vea correctamente en modo flex */
+summary::marker {
+  color: #FFD96D;
+}
+
+/* Si usas Safari, esto asegura que el triángulo no salte arriba */
+summary::-webkit-details-marker {
+  align-self: center;
+}
+
+/* Estilo para el 'P1' (Subtítulos internos) */
+.subtitulo-mistico {
+  font-family: 'Algerian', 'Marcellus SC', 'Cinzel', serif !important;
+  font-size: 35px;
+  color: #FFD96D;
+  margin-bottom: 10px;
+  display: block;
+}
+
+/* Estilo para el 'P2' (Cuerpo de texto) */
+.cuerpo-mistico {
+  font-family: 'Papyrus','IM Fell English SC', 'Eagle Lake', serif !important; /* Fuente más legible para párrafos */
+  font-size: 35px;
+  line-height: 1.5;
+  color: #FFD96D;
+  margin-bottom: 15px;
+}
+
+/* --- REGLA 1: BLINDAJE PARA ALGERIAN --- */
+.subtitulo-mistico {
+  /* Solo tipografía y color */
+  font-family: 'Algerian', 'Marcellus SC', 'Cinzel', serif !important;
+  color: #FFD96D !important;
+  
+  /* Limpieza de distorsión */
+  font-weight: normal !important;
+  font-style: normal !important;
+  text-shadow: none !important;
+  
+  /* Espaciado para que no se pegue al cuerpo */
+  display: block;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  font-size: 1.3rem;
+}
+
+/* --- REGLA 2: BLINDAJE PARA PAPYRUS --- */
+.cuerpo-mistico {
+  /* Solo tipografía y color */
+  font-family: 'Papyrus', 'IM Fell English', 'Eagle Lake', serif !important;
+  color: #FFD96D !important; 
+    
+  /* Limpieza de empaste */
+  font-weight: normal !important;
+  line-height: 1.5; /* Espacio entre renglones para que Papyrus respire */
+  letter-spacing: 0.5px;
+    
+  /* Espaciado */
+  display: block;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+}
+
+
+svg {
+  color: #FFD96D;
+  text-align: justify, inter-word;
+  hyphens: auto; /* Permite que el navegador ponga guiones automáticamente */
+  word-break: break-word; /* Opcional: fuerza el quiebre si la palabra es demasiado larga */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, 'Arial Unicode MS', 'MS Gothic', sans-serif;
+  font-style: normal;
+  font-size: 35px;
+  line-height: 1.5; 
+  display: inline-block;
+  vertical-align: middle;
+  width: 1.2em;  /* Se ajusta al tamaño de tu letra */
+  height: 1.2em;
+  margin-right: 5px;
+}  
+
+.seccion-ajustada {
+  display: flex !important;       /* Fuerza el comportamiento de columna al lado de columna */
+  flex-direction: row; /* Asegura que vayan de lado a lado */
+  align-items: flex-start !important;        /* Alinea todo arriba */
+  justify-content: space-between;
+  gap: 30px;                      /* El espacio exacto entre imagen y texto */
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+/* La imagen a la izquierda con el 40% */
+.seccion-ajustada .contenedor-imagen {
+  flex: 0 0 40%; /* No crece, no se encoge, base del 40% */
+  max-width: 40%;
+}
+
+/* El texto a la derecha con el 60% */
+.bloque-texto {
+  flex: 0 0 60%;
+  order: 2;
+  hyphens: auto; /* Permite que el navegador ponga guiones automáticamente */
+  word-break: break-word; /* Opcional: fuerza el quiebre si la palabra es demasiado larga */
+} 
+
+.seccion-ajustada .contenedor-imagen img {
+  width: 100%; /* Ocupa todo el ancho de su contenedor (el 40%) */
+  height: auto; /* Mantiene su proporción natural */
+  display: block;
+  border-radius: 8px; /* Opcional: suaviza las esquinas */
+}
+
+/* HIJO 2: El bloque de texto (60% del total) */
+.seccion-ajustada .bloque-texto {
+  flex: 0 0 60%; /* Ocupa el resto del espacio */
+  max-width: 60%;
+}
+
+/* --- Estilos Base del Footer --- */
+footer {
+  justify-content: center;   /* Centra los hijos entre sí */
+  background-color: #1a1a1a;
+  border-top: 1px solid #FFD96D;
+  padding-left: 0% !important;
+  padding-right: 0% !important;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  box-sizing: border-box !important;
+  clear: both; /* Rompe cualquier flujo anterior */
+  display: block; 
+  width: 100%;
+}
+
+/* --- Contenedor Principal: ALINEACIÓN HORIZONTAL TOTAL --- */
+.footer-horizontal {
+  justify-content: center;   /* Centra los hijos entre sí */
+  display: flex;
+  flex-direction: row !important;       /* Fuerza una sola línea */
+  align-items: center !important;        /* Alinea texto e iconos a la misma altura */
+  gap: 20px;                  /* Espacio entre texto e iconos */
+  color: #FFD96D;
+}
+
+.copyright {
+  margin: 0;                  /* Crucial: quita márgenes predeterminados */
+  font-family: 'Old English Text MT', 'UnifrakturMaguntia', 'MedievalSharp', cursive;
+  font-size: 20px;
+  flex-direction: row;
+  align-items: center !important;        /* Alinea texto e iconos a la misma altura */
+}
+
+/* --- Contenedor de Iconos --- */
+.grupo-iconos {
+  display: flex;
+  flex-direction: row;       /* Iconos uno al lado del otro */
+  align-items: center;
+  gap: 15px;                  /* Espacio entre los dos iconos */
+}
+
+.enlace-icono {
+  text-decoration: none;
+  display: flex;              /* Ayuda a centrar el SVG */
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* --- ESTILO DE ICONOS: ORO PURO --- */
+.icono-dorado {
+  width: 28px;                /* Tamaño equilibrado */
+  height: 28px;
+  fill: #FFD96D !important;   /* FUERZA el relleno dorado (WhatsApp) */
+  display: flex;
+  stroke: none !important;    /* Quita cualquier borde previo */
+  flex-wrap: nowrap !important;         /* PROHIBE que se bajen a la siguiente línea */
+  flex-direction: row !important;
+}
+
+/* Ajuste específico para el sobre (para que no se vea sólido) */
+.icono-sobre {
+  width: 28px;                /* Tamaño equilibrado */
+  height: 28px;
+  fill: none !important;      /* Quita el relleno sólido */
+  stroke: #FFD96D !important; /* Fuerza el borde dorado */
+  stroke-width: 2 !important; /* Grosor visible */
+  flex-wrap: nowrap !important;         /* PROHIBE que se bajen a la siguiente línea */
+  display: flex;
+  flex-direction: row !important;
+  align-items: center;
+}
+
+/* --- Efecto Hover --- */
+.enlace-icono:hover {
+  transform: scale(1.15);
+  opacity: 0.8;
+}
+
+/* --- RESPONSIVE DESIGN: AJUSTES PARA CELULARES --- */
+
+
+@media (max-width: 480px) {
+  body {
+    background-color: black;
+  }
+
+  /* 2. ESTILO UNIFICADO PARA NAV Y FOOTER */
+  nav, footer {
+    width: 100%;
+    background-color: #1a1a1a; /* Fondo oscuro del Grimorio */
+    display: flex;
+    justify-content: center; /* Centra el contenido internamente */
+    box-sizing: border-box;
+  }
+
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 2px solid #FFD96D; /* Línea dorada abajo */
+  }
+
+  footer {
+    border-top: 2px solid #FFD96D; /* Línea dorada arriba */
+    margin-top: 40px; /* Espacio con el resto del contenido */
+  }
+
+  /* 3. EL CONTENEDOR DE "AIRE" (La zona segura) */
+  /* Usamos la misma clase para ambos para que queden igualados */
+  .contenedor-magico {
+    width: 100%;
+    max-width: 1200px; /* El ancho donde vive tu texto y tablas */
+    padding: 15px 5%;  /* El "aire" del 5% que querías, pero interno */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between; /* Logo a la izquierda, links a la derecha */
+    align-items: center;
+    box-sizing: border-box;
+  }
+
+  /* Ajuste para que los links no se peguen entre ellos */
+  .contenedor-magico ul, .contenedor-magico div {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Las imágenes dejan de flotar para que el texto sea legible */
+  .seccion-ajustada {
+    display: flex !important;       /* Fuerza el comportamiento de columna al lado de columna */
+    flex-direction: row; /* Asegura que vayan de lado a lado */
+    align-items: flex-start !important;        /* Alinea todo arriba */
+    justify-content: space-between;
+    gap: 5px;                      /* El espacio exacto entre imagen y texto */
+    width: 100%;
+    margin-bottom: 40px;
+    padding-right: 10%;
+    padding-left: 0%
+  }
+
+  /* La imagen a la izquierda con el 40% */
+  .seccion-ajustada .contenedor-imagen {
+    flex: 0 0 30%; /* No crece, no se encoge, base del 40% */
+    max-width: 30%;
+  }
+
+  /* El texto a la derecha con el 60% */
+  .bloque-texto {
+    flex: 0 0 60%;
+    order: 2;
+    hyphens: auto; /* Permite que el navegador ponga guiones automáticamente */
+    word-break: break-word; /* Opcional: fuerza el quiebre si la palabra es demasiado larga */
+  } 
+
+  .seccion-ajustada .contenedor-imagen img {
+    width: 100%; /* Ocupa todo el ancho de su contenedor (el 40%) */
+    height: auto; /* Mantiene su proporción natural */
+    display: block;
+    border-radius: 8px; /* Opcional: suaviza las esquinas */
+  }
+
+  /* HIJO 2: El bloque de texto (60% del total) */
+  .seccion-ajustada .bloque-texto {
+    flex: 0 0 60%; /* Ocupa el resto del espacio */
+    max-width: 60%;
+    padding-left: 0%;
+    padding-right: 10%;
+  }
+
+  details {
+    width: 100% !important; /* Se ajusta al contenedor con aire */
+    box-sizing: border-box;
+    overflow-wrap: break-word; /* Fuerza al texto a no estirar el contenedor */
+  }
+  
+  details ul, details ol {
+    padding-left: 20px; /* Aquí controlas qué tan cerca están del borde */
+    margin-left: 0;
+    text-align: left;   /* Aseguramos que el texto siga a la izquierda */
+  }
+
+  details li {
+    list-style-position: outside; /* Mantiene el punto en su propia columna */
+    margin-bottom: 0.8rem;        /* Separa los ítems para que sea fácil tocarlos */
+  }
+  summary {
+    white-space: normal; /* Permite que el título del desplegable use varias líneas si es largo */
+    cursor: pointer;
+  }
+
+  /* Ajustamos el tamaño de los textos para que no se vean gigantes */
+  h1, h2, h3, h4, h5, h6, h7, h8, h9, p, table, thead, tbody, tr, th, td {  
+    text-align: left;
+    /* Ajusta el ancho máximo del texto para que no sea infinito */
+    max-width: 100%; 
+    /* Hacemos que el tamaño de fuente sea un poco más pequeño 
+    pero proporcional al ancho del celular */
+    font-size: 4.2vw; 
+    line-height: 1.5;
+  }
+  /* En móvil el texto justificado a veces se ve mal */
+
+  /* Espaciado extra para los iconos en móvil */
+  .grupo-iconos {
+    justify-content: center;
+    margin-top: 10px;
+  }
+}
+
+/* Ajuste para pantallas MUY pequeñas (reloj o teléfonos viejos) */
+@media (max-width: 320px) {
+  nav {
+    flex: 1 1 100%;      /* Pasa a 1 sola columna si no hay espacio */
+  }
+}
